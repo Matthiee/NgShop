@@ -39,7 +39,9 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await productsRepo.GetByIdAsync(id);
+            var spec = new ProductsWithTypesAndBrandsSpecification(id);
+
+            var product = await productsRepo.GetEntityWithSpec(spec);
 
             return Ok(product);
         }
@@ -48,7 +50,7 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<IActionResult> GetBrands()
         {
-            var brands = await productsRepo.ListAllAsync();
+            var brands = await productsBrandRepo.ListAllAsync();
 
             return Ok(brands);
         }
@@ -56,7 +58,7 @@ namespace API.Controllers
         [HttpGet("types")]
         public async Task<IActionResult> GetTypes()
         {
-            var types = await productsRepo.ListAllAsync();
+            var types = await productsTypeRepo.ListAllAsync();
 
             return Ok(types);
         }
