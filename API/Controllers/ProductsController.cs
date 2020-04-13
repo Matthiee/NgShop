@@ -1,4 +1,6 @@
-﻿using Core.Entities;
+﻿using API.Dto;
+using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Infrastructure.Data;
@@ -18,12 +20,14 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> productsRepo;
         private readonly IGenericRepository<ProductBrand> productsBrandRepo;
         private readonly IGenericRepository<ProductType> productsTypeRepo;
+        private readonly IMapper mapper;
 
-        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductBrand> productsBrandRepo, IGenericRepository<ProductType> productsTypeRepo)
+        public ProductsController(IGenericRepository<Product> productsRepo, IGenericRepository<ProductBrand> productsBrandRepo, IGenericRepository<ProductType> productsTypeRepo, IMapper mapper)
         {
             this.productsRepo = productsRepo;
             this.productsBrandRepo = productsBrandRepo;
             this.productsTypeRepo = productsTypeRepo;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -33,7 +37,9 @@ namespace API.Controllers
 
             var products = await productsRepo.ListAsync(spec);
 
-            return Ok(products);
+            var productsToReturn = mapper.Map<IReadOnlyList<ProductToReturnDto>>(products);
+
+            return Ok(productsToReturn);
         }
 
         [HttpGet("{id}")]
@@ -43,7 +49,9 @@ namespace API.Controllers
 
             var product = await productsRepo.GetEntityWithSpec(spec);
 
-            return Ok(product);
+            var productToReturn = mapper.Map<ProductToReturnDto>(product);
+
+            return Ok(productToReturn);
         }
 
 
