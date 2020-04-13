@@ -350,5 +350,5 @@ MigrationBackup/
 .ionide/
 
 # Custom
-/API/appsettings.Development.json
+appsettings.Development.json
 /StudentAssets
