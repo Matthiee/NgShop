@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using API.Errors;
+using Core.Entities;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,9 +21,21 @@ namespace API.Controllers
         [HttpGet("notfound")]
         public IActionResult GetNotFoundRequest()
         {
-            return NotFound();
+            return NotFound(new ApiResponse(404));
         }
 
-        public IActionResult 
+        [HttpGet("badrequest")]
+        public IActionResult GetBadRequest()
+        {
+            Product p = null;
+
+            return Ok(p.ToString());
+        }
+
+        [HttpGet("badrequest/{id}")]
+        public IActionResult GetValidationError(int id)
+        {
+            return Ok();
+        }
     }
 }
