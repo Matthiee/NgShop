@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>>  GetProducts()
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
 
@@ -41,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
@@ -54,7 +54,7 @@ namespace API.Controllers
 
 
         [HttpGet("brands")]
-        public async Task<IActionResult> GetBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
         {
             var brands = await productsBrandRepo.ListAllAsync();
 
@@ -62,7 +62,7 @@ namespace API.Controllers
         }
 
         [HttpGet("types")]
-        public async Task<IActionResult> GetTypes()
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes()
         {
             var types = await productsTypeRepo.ListAllAsync();
 

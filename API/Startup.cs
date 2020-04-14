@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -36,7 +37,7 @@ namespace API
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddAutoMapper(typeof(Startup).Assembly);
 
-            services.Configure<ApiBehaviorOptions>(opt => 
+            services.Configure<ApiBehaviorOptions>(opt =>
             {
                 opt.InvalidModelStateResponseFactory = actionContext =>
                 {
@@ -50,6 +51,15 @@ namespace API
 
                     return new BadRequestObjectResult(errorResponse);
                 };
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo()
+                {
+                    Title = "Shop API",
+                    Version = "v1"
+                });
             });
         }
 
@@ -67,6 +77,12 @@ namespace API
             app.UseAuthorization();
 
             app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop API v1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
