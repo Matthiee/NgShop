@@ -1,5 +1,9 @@
 .nav-logo {
   max-height: 70px;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
 }
 
 .cart-no {
@@ -13,4 +17,13 @@
   text-align: center;
   top: -12px;
   right: 32px;
+}
+
+a {
+  text-decoration: none;
+  color: #343a40;
+
+  &.active {
+    color: orange;
+  }
 }
