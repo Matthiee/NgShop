@@ -4,13 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public static class StoreContextSeed
+	public static class StoreContextSeed
     {
         public static async Task SeedAsync(this StoreContext context, ILogger logger)
         {

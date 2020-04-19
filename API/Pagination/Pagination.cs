@@ -1,5 +1,4 @@
-﻿using API.Dto;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace API.Pagination
 {
