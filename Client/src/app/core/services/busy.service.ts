@@ -15,6 +15,7 @@ export class BusyService {
       type: 'timer',
       bdColor: 'rgba(255,255,255,0.7)',
       color: '#AAF0D1',
+      fullScreen: true,
     });
   }
 
