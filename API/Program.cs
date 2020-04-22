@@ -1,7 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Core.Entities.Identity;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,11 +28,20 @@ namespace API
                 {
                     var context = services.GetRequiredService<StoreContext>();
 
-                    logger.LogInformation("Migrating database..");
+                    logger.LogInformation("Migrating StoreContext database..");
                     await context.Database.MigrateAsync();
 
-                    logger.LogInformation("Seeding data..");
+                    logger.LogInformation("Seeding StoreContext data..");
                     await context.SeedAsync(logger);
+
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    var identityContext = services.GetRequiredService<AppIdentityDbContext>();
+
+                    logger.LogInformation("Migrating IdentityContext database..");
+                    await identityContext.Database.MigrateAsync();
+
+                    logger.LogInformation("Seeding IdentityContext data..");
+                    await userManager.SeedUserAsync();
 
                     logger.LogInformation("Running application..");
                 }

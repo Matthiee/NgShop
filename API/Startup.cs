@@ -2,6 +2,7 @@ using API.Extensions;
 using API.Middleware;
 using AutoMapper;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<StoreContext>(u => u.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContextPool<StoreContext>(u => u.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContextPool<AppIdentityDbContext>(u => u.UseMySql(Configuration.GetConnectionString("IdentityConnection")));
 
             services.AddDistributedRedisCache(c => 
             {
@@ -34,7 +36,7 @@ namespace API
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddApplicationServices();
-
+            services.AddIdentityServices(Configuration);
             services.AddSwaggerDocumentation();
 
             services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => 
@@ -57,6 +59,7 @@ namespace API
 
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwaggerDocumentation();
