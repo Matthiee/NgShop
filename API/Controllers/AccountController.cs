@@ -54,6 +54,11 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
+            if ((await CheckEmailExistsAsync(registerDto.Email)).Value)
+            {
+                return BadRequest(new ApiValidationErrorResponse(new[] { "Email address is in use" }));
+            }
+
             var user = new AppUser { Name = registerDto.DisplayName, Email = registerDto.Email, UserName = registerDto.Email };
 
             var result = await userManager.CreateAsync(user, registerDto.Password);
@@ -102,7 +107,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser() 
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await userManager.FindByEmailFromClaimsPrincipal(HttpContext.User);
 
