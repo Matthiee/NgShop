@@ -8,6 +8,7 @@ import { ServerErrorComponent } from './server-error/server-error.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { SectionHeaderComponent } from './section-header/section-header.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent],
@@ -19,6 +20,7 @@ import { SectionHeaderComponent } from './section-header/section-header.componen
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
+    SharedModule,
   ],
   exports: [NavBarComponent, SectionHeaderComponent],
 })
