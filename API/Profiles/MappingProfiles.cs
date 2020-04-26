@@ -19,6 +19,8 @@ namespace API.Profiles
 
             CreateMap<Basket, BasketDto>().ReverseMap();
             CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+
+            CreateMap<AddressDto, Core.Entities.OrderAggregate.Address>();
         }
     }
 }
