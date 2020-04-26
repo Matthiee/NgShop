@@ -38,5 +38,34 @@ namespace API.Controllers
 
             return order;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+        {
+            var email = HttpContext.User.RetreiveEmailFromPrincipal();
+
+            var orders = await orderService.GetOrdersForUserAsync(email);
+
+            return Ok(orders);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrderById(int id)
+        {
+            var email = HttpContext.User.RetreiveEmailFromPrincipal();
+
+            var order = await orderService.GetOrderById(id, email);
+
+            if (order == null)
+                return NotFound(new ApiResponse(404));
+
+            return Ok(order);
+        }
+
+        [HttpGet("deliverymethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            return Ok(await orderService.GetDeliveryMethodsAsync());
+        }
     }
 }
