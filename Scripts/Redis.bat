@@ -1,0 +1,1 @@
+docker run --name ng-shop-redis -d -p 6379:6379 redis 
