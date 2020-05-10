@@ -14,16 +14,20 @@ namespace Infrastructure.Services
     {
         private readonly IUnitOfWork uow;
         private readonly IBasketRepository basketRepo;
+        private readonly IPaymentService paymentService;
 
-        public OrderService(IUnitOfWork uow, IBasketRepository basketRepo)
+        public OrderService(IUnitOfWork uow, IBasketRepository basketRepo, IPaymentService paymentService)
         {
             this.uow = uow;
             this.basketRepo = basketRepo;
+            this.paymentService = paymentService;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
         {
             var basket = await basketRepo.GetBasketAsync(basketId);
+
+            if (basket is null) return null;
 
             var items = new List<OrderItem>();
 
@@ -41,7 +45,17 @@ namespace Infrastructure.Services
 
             var subtotal = items.Sum(item => item.Price * item.Quanity);
 
-            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            // check if order exists
+            var spec = new OrderByPaymentIntentIdWithItemsSpecification(basket.PaymentIntentId);
+            var existingOrder = await uow.Repository<Order>().GetEntityWithSpec(spec);
+
+            if (existingOrder != null)
+            {
+                uow.Repository<Order>().Delete(existingOrder);
+                await paymentService.CreateOrUpdatePaymentIntentAsync(basket.PaymentIntentId);
+            }
+
+            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
 
             uow.Repository<Order>().Add(order);
 
@@ -51,8 +65,6 @@ namespace Infrastructure.Services
             {
                 return null;
             }
-
-            await basketRepo.DeleteBasketAsync(basketId);
 
             return order;
         }
