@@ -9,6 +9,8 @@ using Stripe;
 using Core.Entities.OrderAggregate;
 using Product = Core.Entities.Product;
 using System.Linq;
+using Core.Specifications;
+using Order = Core.Entities.OrderAggregate.Order;
 
 namespace Infrastructure.Services
 {
@@ -81,6 +83,36 @@ namespace Infrastructure.Services
             await basketRepository.UpdateBasketAsync(basket);
 
             return basket;
+        }
+
+        public async Task<Core.Entities.OrderAggregate.Order> UpdateOrderPaymentFailed(string paymentIntentId)
+        {
+            var spec = new OrderByPaymentIntentIdWithItemsSpecification(paymentIntentId);
+            var order = await uow.Repository<Order>().GetEntityWithSpec(spec);
+
+            if (order == null) return null;
+
+            order.Status = OrderStatus.PaymentFailed;
+            uow.Repository<Order>().Update(order);
+
+            await uow.Complete();
+
+            return null;
+        }
+
+        public async Task<Core.Entities.OrderAggregate.Order> UpdateOrderPaymentSucceeded(string paymentIntentId)
+        {
+            var spec = new OrderByPaymentIntentIdWithItemsSpecification(paymentIntentId);
+            var order = await uow.Repository<Order>().GetEntityWithSpec(spec);
+
+            if (order == null) return null;
+
+            order.Status = OrderStatus.PaymentReceived;
+            uow.Repository<Order>().Update(order);
+
+            await uow.Complete();
+
+            return null;
         }
     }
 }
