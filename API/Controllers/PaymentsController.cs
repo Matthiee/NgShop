@@ -19,7 +19,7 @@ namespace API.Controllers
     {
         private readonly IPaymentService paymentService;
         private readonly ILogger<PaymentsController> logger;
-        private const string WhSecret = "";
+        private const string WhSecret = "whsec_Zqy6AAABKlVEpP6RRhJwCRpLFVPU0MDO"; // for local testing
 
         public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger)
         {

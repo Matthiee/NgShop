@@ -112,7 +112,7 @@ namespace Infrastructure.Services
 
             await uow.Complete();
 
-            return null;
+            return order;
         }
     }
 }

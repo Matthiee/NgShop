@@ -1,6 +1,6 @@
-export interface Pagination<T> {
+export class Pagination<T> {
   pageIndex: number;
   pageSize: number;
   count: number;
-  data: T[];
+  data: T[] = [];
 }
