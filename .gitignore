@@ -352,3 +352,5 @@ MigrationBackup/
 # Custom
 appsettings.Development.json
 /StudentAssets
+wwwroot
+publish

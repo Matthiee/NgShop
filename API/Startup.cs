@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
+using System.IO;
 
 namespace API
 {
@@ -41,7 +43,7 @@ namespace API
 
             services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => 
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://store.dev:4200");
+                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://store.dev:4200", "https://store.dev:5001");
             }));
         }
 
@@ -56,6 +58,11 @@ namespace API
 
             app.UseRouting();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions 
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Content")),
+                RequestPath = "/content"
+            });
 
             app.UseCors("CorsPolicy");
 
@@ -67,6 +74,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }
